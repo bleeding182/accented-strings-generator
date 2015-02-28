@@ -81,7 +81,7 @@ uploadArchives {
                 packaging 'jar'
                 // optionally artifactId can be defined here
                 description 'Gradle plugin for android to generate accented english resources (values-zz) for all of your current Strings. It will ignore `donottranslate.xml` and `translatable=false` strings.'
-                url 'https://github.com/bleeding182//accented-strings-generator'
+                url 'https://github.com/bleeding182/accented-strings-generator'
 
                 scm {
                     connection 'scm:git:ssh://git@github.com/bleeding182/accented-strings-generator.git'
