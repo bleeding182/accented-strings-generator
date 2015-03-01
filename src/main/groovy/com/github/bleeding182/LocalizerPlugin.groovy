@@ -146,28 +146,44 @@ class LocalizerPlugin implements Plugin<Project> {
 
     private void transformText(NodeList nodes) {
         for (Node node : nodes) {
-            if (node.getNodeType() == Node.TEXT_NODE)
-                node.setTextContent(accentString(node.getTextContent()))
-            else
+            if (node.nodeType == Node.TEXT_NODE) {
+                node.setTextContent(accentString(node.textContent))
+            } else {
+                // ignore localization placeholders enclosed within <xliff:g/> tags.
+                if (node.nodeName == "xliff:g")
+                    continue;
                 transformText(node.childNodes)
+            }
         }
     }
 
 
     private String accentString(String input) {
-        String ret = ""
+        def ret = ""
+        def isFormatterTag = false
         for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
+            def c = input.charAt(i);
+            if (isFormatterTag) {
+                // cancel formatting tag with the first 'normal' letter
+                if (c == '%' || Character.isLowerCase(c) || Character.isUpperCase(c))
+                    isFormatterTag = false
+                ret += c
+                continue
+            }
+            // '%' appeared, do not accent the until next text character
+            if (c == '%') {
+                isFormatterTag = true
+            }
             def mapped = map[new String(c)]
             ret += (mapped == null ? c : mapped)
         }
-        return ret;
+        return ret
     }
 
 
-    private static map = ['a': 'ā', 'b': 'ƃ', 'c': 'č', 'd': 'đ', 'e': 'ë', 'f': 'f', 'g': 'g', 'h': 'h', 'i': 'î',
+    private static map = ['a': 'ā', 'b': 'ƃ', 'c': 'č', 'd': 'đ', 'e': 'ë', 'f': 'f', 'g': 'g', 'h': 'ɦ', 'i': 'î',
             'j': 'j', 'k': 'k', 'l': 'ł', 'm': 'm', 'n': 'ñ', 'o': 'ö', 'p': 'p', 'q': 'q', 'r': 'r', 's': 'š',
-            't': 't', 'u': 'ü', 'v': 'v', 'w': 'w', 'x': 'x', 'y': 'ÿ', z: 'ż', 'A': 'Ä', 'B': 'Ɓ', C: 'Č', D: 'Đ',
+            't': 't', 'u': 'ü', 'v': 'v', 'w': 'ѡ', 'x': 'x', 'y': 'γ', z: 'ż', 'A': 'Ä', 'B': 'Ɓ', C: 'Č', D: 'Đ',
             E: 'Ę', F: 'F', G: 'G', H: 'H', I: 'Î', J: 'J', K: 'K', L: 'Ł', M: "M", N: 'Ń', O: 'Ō', P: 'P', Q: 'Q',
-            R: 'R', S: 'Ś', T: 'T', U: 'Ü', V: 'V', W: 'W', X: 'X', Y: 'Ÿ', Z: 'Ž'];
+            R: 'Ȓ', S: 'Ś', T: 'T', U: 'Ü', V: 'V', W: 'W', X: 'X', Y: 'Ÿ', Z: 'Ž'];
 }
