@@ -4,7 +4,10 @@ Gradle plugin for android to generate accented english resources (values-zz) for
 It will ignore `donottranslate.xml` and `translatable=false` strings
 
 ## Features
-The plugin will generate an accented variant of all your strings from `res/values` in `build/generated/res/accented/buildType/values-zz`.
+The plugin will generate an accented variant of all your strings from the `res/values` directories of all build variants. The resulting files are added to `build/generated/res/accented/buildType/values-zz`.
+
+Everything within `<xliff:g>tags</xliff:g>` will remain untouched. Also formatter Strings like `%s` remain unchanged.
+For more information on String Localisation see <a href="https://developer.android.com/distribute/tools/localization-checklist.html#manage-strings">here</a>.
 
 Iff you use this plugin, be sure not to set any strings in `values-zz` yourself or a conflict merging resources will occur.
 
